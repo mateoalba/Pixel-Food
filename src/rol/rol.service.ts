@@ -9,44 +9,34 @@ import { UpdateRolDto } from './dto/update-rol.dto';
 export class RolService {
   constructor(
     @InjectRepository(Rol)
-    private rolRepo: Repository<Rol>,
+    private rolRepository: Repository<Rol>,
   ) {}
 
-  create(dto: CreateRolDto) {
-    const nuevo = this.rolRepo.create(dto);
-    return this.rolRepo.save(nuevo);
-  }
-
   findAll() {
-    return this.rolRepo.find();
+    return this.rolRepository.find();
   }
 
-async findOne(id: string) {
-  const rol = await this.rolRepo.findOne({ where: { id_rol: id } });
-
-  if (!rol) {
-    throw new NotFoundException(`No existe el rol con ID: ${id}`);
+  async findOne(id: string) {
+    const rol = await this.rolRepository.findOne({ where: { id_rol: id } });
+    if (!rol) {
+      throw new NotFoundException('Rol no encontrado');
+    }
+    return rol;
   }
 
-  return rol;
-}
+  create(dto: CreateRolDto) {
+    const nuevoRol = this.rolRepository.create(dto);
+    return this.rolRepository.save(nuevoRol);
+  }
 
-async updatePut(id: string, updateRolDto: UpdateRolDto) {
-  const rol = await this.findOne(id);
-
-  rol.nombre = updateRolDto.nombre;
-  rol.descripcion = updateRolDto.descripcion;
-
-  return await this.rolRepo.save(rol);
-}
+  async update(id: string, dto: UpdateRolDto) {
+    const rol = await this.findOne(id);
+    Object.assign(rol, dto);
+    return this.rolRepository.save(rol);
+  }
 
   async remove(id: string) {
     const rol = await this.findOne(id);
-    await this.rolRepo.remove(rol);
-
-    return {
-      message: 'Rol eliminado correctamente',
-      eliminado: rol,
-    };
+    return this.rolRepository.remove(rol);
   }
 }

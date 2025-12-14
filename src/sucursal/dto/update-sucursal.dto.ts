@@ -1,23 +1,4 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateSucursalDto } from './create-sucursal.dto';
 
-export class UpdateSucursalDto {
-  @IsString()
-  @IsNotEmpty()
-  nombre: string;
-
-  @IsString()
-  @IsNotEmpty()
-  direccion: string;
-
-  @IsString()
-  @IsNotEmpty()
-  telefono: string;
-
-  @IsString()
-  @IsNotEmpty()
-  ciudad: string;
-
-  @IsString()
-  @IsNotEmpty()
-  departamento: string;
-}
+export class UpdateSucursalDto extends PartialType(CreateSucursalDto) {}

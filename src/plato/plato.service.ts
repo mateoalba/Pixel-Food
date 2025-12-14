@@ -21,26 +21,26 @@ export class PlatoService {
       where: { id_categoria: dto.id_categoria },
     });
 
-    if (!categoria) {
-      throw new NotFoundException('Categoría no encontrada');
-    }
+    if (!categoria) throw new NotFoundException('Categoría no encontrada');
 
     const plato = this.platoRepo.create({
       ...dto,
-      categoria: categoria,
+      categoria,
     });
 
     return this.platoRepo.save(plato);
   }
 
-  async findAll() {
-    return this.platoRepo.find({ relations: ['categoria'] });
+  findAll() {
+    return this.platoRepo.find({
+      relations: ['categoria', 'recetas'],
+    });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const plato = await this.platoRepo.findOne({
       where: { id_plato: id },
-      relations: ['categoria'],
+      relations: ['categoria', 'recetas'],
     });
 
     if (!plato) throw new NotFoundException('Plato no encontrado');
@@ -48,7 +48,7 @@ export class PlatoService {
     return plato;
   }
 
-  async update(id: number, dto: UpdatePlatoDto) {
+  async update(id: string, dto: UpdatePlatoDto) {
     const plato = await this.findOne(id);
 
     if (dto.id_categoria) {
@@ -62,12 +62,12 @@ export class PlatoService {
     }
 
     Object.assign(plato, dto);
+
     return this.platoRepo.save(plato);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const plato = await this.findOne(id);
-    await this.platoRepo.remove(plato);
-    return plato;
+    return this.platoRepo.remove(plato);
   }
 }

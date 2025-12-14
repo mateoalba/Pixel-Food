@@ -1,10 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { Sucursal } from 'src/sucursal/sucursal.entity';
+import { v4 as uuid } from 'uuid';
 
 @Entity('mesa')
 export class Mesa {
-  @PrimaryGeneratedColumn()
-  id_mesa: number;
+  @PrimaryGeneratedColumn('uuid')
+  id_mesa: string;
 
   @Column()
   numero: number;
@@ -15,8 +16,13 @@ export class Mesa {
   @Column()
   estado: string;
 
+  @Column()
+  id_sucursal: string; // foreign key UUID
+
   @ManyToOne(() => Sucursal, (sucursal) => sucursal.mesas, {
     onDelete: 'CASCADE',
+    eager: true,
   })
+  @JoinColumn({ name: 'id_sucursal' })
   sucursal: Sucursal;
 }

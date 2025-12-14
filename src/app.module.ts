@@ -13,6 +13,9 @@ import { MesaModule } from './mesa/mesa.module';
 import { IngredienteModule } from './ingrediente/ingrediente.module';
 import { PlatoModule } from './plato/plato.module';
 import { RecetaModule } from './receta/receta.module';
+import { PedidoModule } from './pedido/pedido.module';
+import { ReservaModule } from './reserva/reserva.module';
+import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { RecetaModule } from './receta/receta.module';
     IngredienteModule,
     PlatoModule,
     RecetaModule,
+    PedidoModule,
+    ReservaModule,
+    DetallePedidoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

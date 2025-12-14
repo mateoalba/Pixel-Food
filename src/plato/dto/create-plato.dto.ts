@@ -1,12 +1,10 @@
-import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
+import { IsString, IsBoolean, IsNumber, IsUUID } from 'class-validator';
 
 export class CreatePlatoDto {
   @IsString()
-  @IsNotEmpty()
   nombre: string;
 
   @IsString()
-  @IsNotEmpty()
   descripcion: string;
 
   @IsNumber()
@@ -15,6 +13,6 @@ export class CreatePlatoDto {
   @IsBoolean()
   disponible: boolean;
 
-  @IsNumber()
-  id_categoria: number;
+  @IsUUID()
+  id_categoria: string;
 }

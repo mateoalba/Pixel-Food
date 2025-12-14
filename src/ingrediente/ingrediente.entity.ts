@@ -3,8 +3,8 @@ import { Receta } from 'src/receta/receta.entity';
 
 @Entity('ingrediente')
 export class Ingrediente {
-  @PrimaryGeneratedColumn()
-  id_ingrediente: number;
+  @PrimaryGeneratedColumn('uuid')
+  id_ingrediente: string;
 
   @Column()
   nombre: string;

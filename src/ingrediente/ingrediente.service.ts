@@ -9,36 +9,32 @@ import { UpdateIngredienteDto } from './dto/update-ingrediente.dto';
 export class IngredienteService {
   constructor(
     @InjectRepository(Ingrediente)
-    private ingredienteRepo: Repository<Ingrediente>,
+    private readonly ingredienteRepo: Repository<Ingrediente>,
   ) {}
+
+  findAll() {
+    return this.ingredienteRepo.find();
+  }
+
+  async findOne(id: string) {
+    const ingrediente = await this.ingredienteRepo.findOne({ where: { id_ingrediente: id } });
+    if (!ingrediente) throw new NotFoundException('Ingrediente no encontrado');
+    return ingrediente;
+  }
 
   create(dto: CreateIngredienteDto) {
     const nuevo = this.ingredienteRepo.create(dto);
     return this.ingredienteRepo.save(nuevo);
   }
 
-  findAll() {
-    return this.ingredienteRepo.find();
-  }
-
-  async findOne(id: number) {
-    const ingrediente = await this.ingredienteRepo.findOne({
-      where: { id_ingrediente: id },
-    });
-
-    if (!ingrediente) throw new NotFoundException('Ingrediente no encontrado');
-    return ingrediente;
-  }
-
-  async update(id: number, dto: UpdateIngredienteDto) {
+  async update(id: string, dto: UpdateIngredienteDto) {
     const ingrediente = await this.findOne(id);
     Object.assign(ingrediente, dto);
     return this.ingredienteRepo.save(ingrediente);
   }
 
-  async remove(id: number) {
+  async delete(id: string) {
     const ingrediente = await this.findOne(id);
-    await this.ingredienteRepo.remove(ingrediente);
-    return ingrediente;
+    return this.ingredienteRepo.remove(ingrediente);
   }
 }

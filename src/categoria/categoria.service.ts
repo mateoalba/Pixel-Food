@@ -9,36 +9,42 @@ import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 export class CategoriaService {
   constructor(
     @InjectRepository(Categoria)
-    private categoriaRepo: Repository<Categoria>,
+    private readonly categoriaRepo: Repository<Categoria>,
   ) {}
 
+
   async create(dto: CreateCategoriaDto) {
-    const nueva = this.categoriaRepo.create(dto);
-    return await this.categoriaRepo.save(nueva);
+    const categoria = this.categoriaRepo.create(dto);
+    return await this.categoriaRepo.save(categoria);
   }
+
 
   async findAll() {
-    return this.categoriaRepo.find();
+    return await this.categoriaRepo.find();
   }
 
-  async findOne(id: number) {
+
+  async findOne(id: string) {
     const categoria = await this.categoriaRepo.findOne({
       where: { id_categoria: id },
     });
 
-    if (!categoria) throw new NotFoundException('Categoría no encontrada');
+    if (!categoria)
+      throw new NotFoundException(`Categoría con ID ${id} no existe`);
 
     return categoria;
   }
 
-  async update(id: number, dto: UpdateCategoriaDto) {
+  async update(id: string, dto: UpdateCategoriaDto) {
     const categoria = await this.findOne(id);
 
     Object.assign(categoria, dto);
+
     return await this.categoriaRepo.save(categoria);
   }
 
-  async remove(id: number) {
+
+  async remove(id: string) {
     const categoria = await this.findOne(id);
     await this.categoriaRepo.remove(categoria);
     return categoria;

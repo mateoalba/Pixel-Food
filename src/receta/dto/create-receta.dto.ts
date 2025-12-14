@@ -1,13 +1,13 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateRecetaDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  id_plato: number;
+  id_plato: string;     
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  id_ingrediente: number;
+  id_ingrediente: string; 
 
   @IsNumber()
   @IsNotEmpty()

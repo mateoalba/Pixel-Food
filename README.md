@@ -25,3 +25,19 @@ nest generate service ingrediente
 nest generate module plato
 nest generate controller plato
 nest generate service plato
+
+nest generate module receta
+nest generate controller receta
+nest generate service receta
+
+nest generate module pedido
+nest generate controller pedido
+nest generate service pedido
+
+nest generate module reserva
+nest generate controller reserva
+nest generate service reserva
+
+nest generate module detalle_pedido
+nest generate controller detalle_pedido
+nest generate service detalle_pedido

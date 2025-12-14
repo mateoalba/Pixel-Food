@@ -12,35 +12,35 @@ export class SucursalService {
     private readonly sucursalRepository: Repository<Sucursal>,
   ) {}
 
-  async create(dto: CreateSucursalDto): Promise<Sucursal> {
-    const sucursal = this.sucursalRepository.create(dto);
-    return await this.sucursalRepository.save(sucursal);
+  findAll() {
+    return this.sucursalRepository.find({
+      relations: ['mesas'],
+    });
   }
 
-  async findAll(): Promise<Sucursal[]> {
-    return await this.sucursalRepository.find();
-  }
-
-  async findOne(id: number): Promise<Sucursal> {
+  async findOne(id: string) {
     const sucursal = await this.sucursalRepository.findOne({
       where: { id_sucursal: id },
+      relations: ['mesas'],
     });
 
-    if (!sucursal) {
-      throw new NotFoundException(`Sucursal con ID ${id} no encontrada`);
-    }
-
+    if (!sucursal) throw new NotFoundException('Sucursal no encontrada');
     return sucursal;
   }
 
-  async update(id: number, dto: UpdateSucursalDto): Promise<Sucursal> {
+  create(dto: CreateSucursalDto) {
+    const newData = this.sucursalRepository.create(dto);
+    return this.sucursalRepository.save(newData);
+  }
+
+  async update(id: string, dto: UpdateSucursalDto) {
     const sucursal = await this.findOne(id);
     Object.assign(sucursal, dto);
     return this.sucursalRepository.save(sucursal);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string) {
     const sucursal = await this.findOne(id);
-    await this.sucursalRepository.remove(sucursal);
+    return this.sucursalRepository.remove(sucursal);
   }
 }

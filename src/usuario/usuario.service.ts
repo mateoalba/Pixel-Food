@@ -9,50 +9,46 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
-    private usuarioRepo: Repository<Usuario>,
+    private usuarioRepository: Repository<Usuario>,
   ) {}
 
-  async create(dto: CreateUsuarioDto) {
-    const nuevo = this.usuarioRepo.create(dto);
-    return await this.usuarioRepo.save(nuevo);
+  async create(dto: CreateUsuarioDto): Promise<Usuario> {
+    const nuevo = this.usuarioRepository.create(dto);
+    return this.usuarioRepository.save(nuevo);
   }
 
-  async findAll() {
-    return await this.usuarioRepo.find();
+  async findAll(): Promise<Usuario[]> {
+    return this.usuarioRepository.find();
   }
 
-  async findOne(id: string) {
-    const usuario = await this.usuarioRepo.findOne({ where: { id_usuario: id } });
+  async findOne(id: string): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.findOne({
+      where: { id_usuario: id },
+    });
 
-    if (!usuario) {
-      throw new NotFoundException(`Usuario con ID ${id} no existe`);
-    }
+    if (!usuario) throw new NotFoundException('Usuario no encontrado');
 
     return usuario;
   }
 
-async findByCorreo(correo: string) {
-  return await this.usuarioRepo.findOne({ where: { correo } });
-}
-
-  async update(id: string, dto: UpdateUsuarioDto) {
-    const usuario = await this.findOne(id);
-
-    // PUT REEMPLAZA TODO
-    usuario.nombre = dto.nombre;
-    usuario.apellido = dto.apellido;
-    usuario.correo = dto.correo;
-    usuario.contrasena = dto.contrasena;
-    usuario.telefono = dto.telefono;
-    usuario.direccion = dto.direccion;
-    usuario.rol_id = dto.rol_id;
-
-    return await this.usuarioRepo.save(usuario);
+  async findByCorreo(correo: string): Promise<Usuario | null> {
+    return this.usuarioRepository.findOne({
+      where: { correo },
+    });
   }
 
-  async remove(id: string) {
+  async update(id: string, dto: UpdateUsuarioDto): Promise<Usuario> {
     const usuario = await this.findOne(id);
-    await this.usuarioRepo.remove(usuario);
-    return usuario; 
+
+    Object.assign(usuario, dto);
+
+    return this.usuarioRepository.save(usuario);
+  }
+
+  async remove(id: string): Promise<Usuario> {
+    const usuario = await this.findOne(id);
+
+    await this.usuarioRepository.remove(usuario);
+    return usuario;
   }
 }

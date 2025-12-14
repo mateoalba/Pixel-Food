@@ -3,8 +3,8 @@ import { Plato } from 'src/plato/plato.entity';
 
 @Entity('categoria')
 export class Categoria {
-  @PrimaryGeneratedColumn({ name: 'id_categoria', type: 'int' })
-  id_categoria: number;
+  @PrimaryGeneratedColumn('uuid', { name: 'id_categoria' })
+  id_categoria: string;
 
   @Column({ type: 'varchar', length: 255 })
   nombre: string;

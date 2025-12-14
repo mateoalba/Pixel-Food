@@ -1,20 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Delete,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('categorias')
-@UseGuards(JwtAuthGuard)
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
 
@@ -30,16 +19,16 @@ export class CategoriaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.categoriaService.findOne(Number(id));
+    return this.categoriaService.findOne(id);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateCategoriaDto) {
-    return this.categoriaService.update(Number(id), dto);
+    return this.categoriaService.update(id, dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.categoriaService.remove(Number(id));
+    return this.categoriaService.remove(id);
   }
 }

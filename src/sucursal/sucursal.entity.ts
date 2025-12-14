@@ -3,8 +3,8 @@ import { Mesa } from 'src/mesa/mesa.entity';
 
 @Entity('sucursal')
 export class Sucursal {
-  @PrimaryGeneratedColumn()
-  id_sucursal: number;
+  @PrimaryGeneratedColumn('uuid')
+  id_sucursal: string;
 
   @Column()
   nombre: string;

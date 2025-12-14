@@ -21,35 +21,28 @@ export class RecetaService {
   ) {}
 
   async create(dto: CreateRecetaDto) {
-    const plato = await this.platoRepo.findOne({
-      where: { id_plato: dto.id_plato },
-    });
-
+    const plato = await this.platoRepo.findOne({ where: { id_plato: dto.id_plato } });
     if (!plato) throw new NotFoundException('Plato no encontrado');
 
-    const ingrediente = await this.ingredienteRepo.findOne({
-      where: { id_ingrediente: dto.id_ingrediente },
-    });
+    const ingrediente = await this.ingredienteRepo.findOne({ where: { id_ingrediente: dto.id_ingrediente } });
+    if (!ingrediente) throw new NotFoundException('Ingrediente no encontrado');
 
-    if (!ingrediente)
-      throw new NotFoundException('Ingrediente no encontrado');
-
-    const nueva = this.recetaRepo.create({
+    const receta = this.recetaRepo.create({
+      cantidad: dto.cantidad,
       plato,
       ingrediente,
-      cantidad: dto.cantidad,
     });
 
-    return this.recetaRepo.save(nueva);
+    return await this.recetaRepo.save(receta);
   }
 
-  findAll() {
+  async findAll() {
     return this.recetaRepo.find({
       relations: ['plato', 'ingrediente'],
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const receta = await this.recetaRepo.findOne({
       where: { id_receta: id },
       relations: ['plato', 'ingrediente'],
@@ -60,9 +53,8 @@ export class RecetaService {
     return receta;
   }
 
-async update(id: number, dto: UpdateRecetaDto) {
-  const receta = await this.findOne(id);
-
+  async update(id: string, dto: UpdateRecetaDto) {
+    const receta = await this.findOne(id);
 
   if (dto.id_plato) {
     const plato = await this.platoRepo.findOne({ where: { id_plato: dto.id_plato } });
@@ -71,25 +63,18 @@ async update(id: number, dto: UpdateRecetaDto) {
   }
 
   if (dto.id_ingrediente) {
-    const ingrediente = await this.ingredienteRepo.findOne({
-      where: { id_ingrediente: dto.id_ingrediente },
-    });
+    const ingrediente = await this.ingredienteRepo.findOne({ where: { id_ingrediente: dto.id_ingrediente } });
     if (!ingrediente) throw new NotFoundException('Ingrediente no encontrado');
     receta.ingrediente = ingrediente;
   }
 
-  if (dto.cantidad !== undefined) {
-    receta.cantidad = dto.cantidad;
+    Object.assign(receta, dto);
+
+    return await this.recetaRepo.save(receta);
   }
 
-  await this.recetaRepo.save(receta);
-
-// ⭐
-  return this.findOne(id);
-}
-
-  async remove(id: number) {
+  async remove(id: string) {
     const receta = await this.findOne(id);
-    return this.recetaRepo.remove(receta);
+    return await this.recetaRepo.remove(receta);
   }
 }

@@ -4,26 +4,28 @@ import { Receta } from 'src/receta/receta.entity';
 
 @Entity('plato')
 export class Plato {
-  @PrimaryGeneratedColumn()
-  id_plato: number;
 
-  @Column()
-  nombre: string;
+  @PrimaryGeneratedColumn('uuid', { name: 'id_plato' })
+  id_plato: string;
 
-  @Column('text')
-  descripcion: string;
+  @Column()
+  nombre: string;
 
-  @Column('decimal')
-  precio: number;
+  @Column('text')
+  descripcion: string;
 
-  @Column()
-  disponible: boolean;
+  @Column('decimal')
+  precio: number;
 
-  @ManyToOne(() => Categoria, categoria => categoria.platos, {
-    onDelete: 'SET NULL',
-  })
-  categoria: Categoria;
+  @Column()
+  disponible: boolean;
 
-  @OneToMany(() => Receta, receta => receta.plato)
-  recetas: Receta[];
+  @ManyToOne(() => Categoria, categoria => categoria.platos, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  categoria: Categoria;
+
+  @OneToMany(() => Receta, receta => receta.plato)
+  recetas: Receta[];
 }

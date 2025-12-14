@@ -1,17 +1,15 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { RolService } from './rol.service';
 import { CreateRolDto } from './dto/create-rol.dto';
 import { UpdateRolDto } from './dto/update-rol.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('roles')
-@UseGuards(JwtAuthGuard)
+@Controller('rol')
 export class RolController {
   constructor(private readonly rolService: RolService) {}
 
   @Post()
-  create(@Body() dto: CreateRolDto) {
-    return this.rolService.create(dto);
+  create(@Body() createRolDto: CreateRolDto) {
+    return this.rolService.create(createRolDto);
   }
 
   @Get()
@@ -25,8 +23,8 @@ export class RolController {
   }
 
   @Put(':id')
-  updatePut(@Param('id') id: string, @Body() dto: UpdateRolDto) {
-    return this.rolService.updatePut(id, dto);
+  update(@Param('id') id: string, @Body() updateRolDto: UpdateRolDto) {
+    return this.rolService.update(id, updateRolDto);
   }
 
   @Delete(':id')

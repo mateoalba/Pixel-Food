@@ -1,23 +1,4 @@
-import { IsString, IsNumber, IsBoolean, IsOptional } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreatePlatoDto } from './create-plato.dto';
 
-export class UpdatePlatoDto {
-  @IsString()
-  @IsOptional()
-  nombre?: string;
-
-  @IsString()
-  @IsOptional()
-  descripcion?: string;
-
-  @IsNumber()
-  @IsOptional()
-  precio?: number;
-
-  @IsBoolean()
-  @IsOptional()
-  disponible?: boolean;
-
-  @IsNumber()
-  @IsOptional()
-  id_categoria?: number;
-}
+export class UpdatePlatoDto extends PartialType(CreatePlatoDto) {}

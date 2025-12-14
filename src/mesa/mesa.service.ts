@@ -10,14 +10,14 @@ import { Sucursal } from 'src/sucursal/sucursal.entity';
 export class MesaService {
   constructor(
     @InjectRepository(Mesa)
-    private mesaRepo: Repository<Mesa>,
+    private readonly mesaRepository: Repository<Mesa>,
 
     @InjectRepository(Sucursal)
-    private sucursalRepo: Repository<Sucursal>,
+    private readonly sucursalRepository: Repository<Sucursal>,
   ) {}
 
-  async create(dto: CreateMesaDto) {
-    const sucursal = await this.sucursalRepo.findOne({
+  async crearMesa(dto: CreateMesaDto): Promise<Mesa> {
+    const sucursal = await this.sucursalRepository.findOne({
       where: { id_sucursal: dto.id_sucursal },
     });
 
@@ -25,39 +25,56 @@ export class MesaService {
       throw new NotFoundException('Sucursal no encontrada');
     }
 
-    const nueva = this.mesaRepo.create({
+    const mesa = this.mesaRepository.create({
       numero: dto.numero,
       capacidad: dto.capacidad,
       estado: dto.estado,
-      sucursal,
+      sucursal: sucursal,
     });
 
-    return await this.mesaRepo.save(nueva);
+    return await this.mesaRepository.save(mesa);
   }
 
-  async findAll() {
-    return this.mesaRepo.find({ relations: ['sucursal'] });
+  async obtenerMesas(): Promise<Mesa[]> {
+    return await this.mesaRepository.find({ relations: ['sucursal'] });
   }
 
-  async findOne(id: number) {
-    const mesa = await this.mesaRepo.findOne({
+  async obtenerMesaPorId(id: string): Promise<Mesa> {
+    const mesa = await this.mesaRepository.findOne({
       where: { id_mesa: id },
       relations: ['sucursal'],
     });
 
-    if (!mesa) throw new NotFoundException('Mesa no encontrada');
+    if (!mesa) {
+      throw new NotFoundException('Mesa no encontrada');
+    }
+
     return mesa;
   }
 
-  async update(id: number, dto: UpdateMesaDto) {
-    const mesa = await this.findOne(id);
+  async actualizarMesa(id: string, dto: UpdateMesaDto): Promise<Mesa> {
+    const mesa = await this.obtenerMesaPorId(id);
+
+    if (dto.id_sucursal) {
+      const sucursal = await this.sucursalRepository.findOne({
+        where: { id_sucursal: dto.id_sucursal },
+      });
+
+      if (!sucursal) {
+        throw new NotFoundException('Sucursal no encontrada');
+      }
+
+      mesa.sucursal = sucursal;
+    }
 
     Object.assign(mesa, dto);
-    return this.mesaRepo.save(mesa);
+
+    return await this.mesaRepository.save(mesa);
   }
 
-  async remove(id: number) {
-    const mesa = await this.findOne(id);
-    return this.mesaRepo.remove(mesa);
+  async eliminarMesa(id: string): Promise<Mesa> {
+    const mesa = await this.obtenerMesaPorId(id);
+    await this.mesaRepository.remove(mesa);
+    return mesa;
   }
 }
