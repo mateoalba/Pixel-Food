@@ -12,48 +12,35 @@ export class CategoriaService {
     private categoriaRepo: Repository<Categoria>,
   ) {}
 
-  async create(createCategoriaDto: CreateCategoriaDto) {
-    const categoria = this.categoriaRepo.create(createCategoriaDto);
-    return await this.categoriaRepo.save(categoria);
+  async create(dto: CreateCategoriaDto) {
+    const nueva = this.categoriaRepo.create(dto);
+    return await this.categoriaRepo.save(nueva);
   }
 
-  findAll() {
+  async findAll() {
     return this.categoriaRepo.find();
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     const categoria = await this.categoriaRepo.findOne({
       where: { id_categoria: id },
     });
 
-    if (!categoria) {
-      throw new NotFoundException(`No existe la categoría con ID: ${id}`);
-    }
+    if (!categoria) throw new NotFoundException('Categoría no encontrada');
 
     return categoria;
   }
 
-  async updatePut(id: string, updateCategoriaDto: UpdateCategoriaDto) {
+  async update(id: number, dto: UpdateCategoriaDto) {
     const categoria = await this.findOne(id);
 
-    categoria.nombre = updateCategoriaDto.nombre;
-    categoria.descripcion = updateCategoriaDto.descripcion;
-
-    return this.categoriaRepo.save(categoria);
+    Object.assign(categoria, dto);
+    return await this.categoriaRepo.save(categoria);
   }
 
-  async update(id: string, updateCategoriaDto: UpdateCategoriaDto) {
+  async remove(id: number) {
     const categoria = await this.findOne(id);
-
-    Object.assign(categoria, updateCategoriaDto);
-
-    return this.categoriaRepo.save(categoria);
+    await this.categoriaRepo.remove(categoria);
+    return categoria;
   }
-
-async remove(id: string) {
-  const categoria = await this.findOne(id);
-  await this.categoriaRepo.delete(id);
-  return categoria;
-}
-
 }

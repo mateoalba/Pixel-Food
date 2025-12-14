@@ -1,0 +1,95 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Receta } from './receta.entity';
+import { CreateRecetaDto } from './dto/create-receta.dto';
+import { UpdateRecetaDto } from './dto/update-receta.dto';
+import { Plato } from 'src/plato/plato.entity';
+import { Ingrediente } from 'src/ingrediente/ingrediente.entity';
+
+@Injectable()
+export class RecetaService {
+  constructor(
+    @InjectRepository(Receta)
+    private recetaRepo: Repository<Receta>,
+
+    @InjectRepository(Plato)
+    private platoRepo: Repository<Plato>,
+
+    @InjectRepository(Ingrediente)
+    private ingredienteRepo: Repository<Ingrediente>,
+  ) {}
+
+  async create(dto: CreateRecetaDto) {
+    const plato = await this.platoRepo.findOne({
+      where: { id_plato: dto.id_plato },
+    });
+
+    if (!plato) throw new NotFoundException('Plato no encontrado');
+
+    const ingrediente = await this.ingredienteRepo.findOne({
+      where: { id_ingrediente: dto.id_ingrediente },
+    });
+
+    if (!ingrediente)
+      throw new NotFoundException('Ingrediente no encontrado');
+
+    const nueva = this.recetaRepo.create({
+      plato,
+      ingrediente,
+      cantidad: dto.cantidad,
+    });
+
+    return this.recetaRepo.save(nueva);
+  }
+
+  findAll() {
+    return this.recetaRepo.find({
+      relations: ['plato', 'ingrediente'],
+    });
+  }
+
+  async findOne(id: number) {
+    const receta = await this.recetaRepo.findOne({
+      where: { id_receta: id },
+      relations: ['plato', 'ingrediente'],
+    });
+
+    if (!receta) throw new NotFoundException('Receta no encontrada');
+
+    return receta;
+  }
+
+async update(id: number, dto: UpdateRecetaDto) {
+  const receta = await this.findOne(id);
+
+
+  if (dto.id_plato) {
+    const plato = await this.platoRepo.findOne({ where: { id_plato: dto.id_plato } });
+    if (!plato) throw new NotFoundException('Plato no encontrado');
+    receta.plato = plato;
+  }
+
+  if (dto.id_ingrediente) {
+    const ingrediente = await this.ingredienteRepo.findOne({
+      where: { id_ingrediente: dto.id_ingrediente },
+    });
+    if (!ingrediente) throw new NotFoundException('Ingrediente no encontrado');
+    receta.ingrediente = ingrediente;
+  }
+
+  if (dto.cantidad !== undefined) {
+    receta.cantidad = dto.cantidad;
+  }
+
+  await this.recetaRepo.save(receta);
+
+// ⭐
+  return this.findOne(id);
+}
+
+  async remove(id: number) {
+    const receta = await this.findOne(id);
+    return this.recetaRepo.remove(receta);
+  }
+}

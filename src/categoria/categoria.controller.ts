@@ -1,15 +1,26 @@
-import {Controller, Get, Post, Body, Param, Patch, Delete,Put} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('categorias')
+@UseGuards(JwtAuthGuard)
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
 
   @Post()
-  create(@Body() createCategoriaDto: CreateCategoriaDto) {
-    return this.categoriaService.create(createCategoriaDto);
+  create(@Body() dto: CreateCategoriaDto) {
+    return this.categoriaService.create(dto);
   }
 
   @Get()
@@ -19,21 +30,16 @@ export class CategoriaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.categoriaService.findOne(id);
+    return this.categoriaService.findOne(Number(id));
   }
 
   @Put(':id')
-  updatePut(@Param('id') id: string, @Body() dto: UpdateCategoriaDto) {
-    return this.categoriaService.updatePut(id, dto);
-  }
-
-  @Patch(':id')
   update(@Param('id') id: string, @Body() dto: UpdateCategoriaDto) {
-    return this.categoriaService.update(id, dto);
+    return this.categoriaService.update(Number(id), dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.categoriaService.remove(id);
+    return this.categoriaService.remove(Number(id));
   }
 }

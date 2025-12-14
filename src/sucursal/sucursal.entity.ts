@@ -1,22 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Mesa } from 'src/mesa/mesa.entity';
 
 @Entity('sucursal')
 export class Sucursal {
-  @PrimaryGeneratedColumn('uuid')
-  id_sucursal: string;
+  @PrimaryGeneratedColumn()
+  id_sucursal: number;
 
-  @Column({ length: 100 })
+  @Column()
   nombre: string;
 
-  @Column({ length: 200 })
+  @Column()
   direccion: string;
 
-  @Column({ length: 20 })
+  @Column()
   telefono: string;
 
-  @Column({ length: 100 })
-  ciudad: string;
-
-  @Column({ length: 100 })
-  departamento: string;
+  @OneToMany(() => Mesa, (mesa) => mesa.sucursal)
+  mesas: Mesa[];
 }

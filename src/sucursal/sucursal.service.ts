@@ -9,44 +9,38 @@ import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 export class SucursalService {
   constructor(
     @InjectRepository(Sucursal)
-    private readonly sucursalRepo: Repository<Sucursal>,
+    private readonly sucursalRepository: Repository<Sucursal>,
   ) {}
 
-  create(dto: CreateSucursalDto) {
-    const nueva = this.sucursalRepo.create(dto);
-    return this.sucursalRepo.save(nueva);
+  async create(dto: CreateSucursalDto): Promise<Sucursal> {
+    const sucursal = this.sucursalRepository.create(dto);
+    return await this.sucursalRepository.save(sucursal);
   }
 
-  findAll() {
-    return this.sucursalRepo.find();
+  async findAll(): Promise<Sucursal[]> {
+    return await this.sucursalRepository.find();
   }
 
-  async findOne(id: string) {
-    const sucursal = await this.sucursalRepo.findOne({
+  async findOne(id: number): Promise<Sucursal> {
+    const sucursal = await this.sucursalRepository.findOne({
       where: { id_sucursal: id },
     });
 
-    if (!sucursal) throw new NotFoundException(`No existe sucursal con ID: ${id}`);
+    if (!sucursal) {
+      throw new NotFoundException(`Sucursal con ID ${id} no encontrada`);
+    }
 
     return sucursal;
   }
 
-  async update(id: string, dto: UpdateSucursalDto) {
+  async update(id: number, dto: UpdateSucursalDto): Promise<Sucursal> {
     const sucursal = await this.findOne(id);
-
-
-    sucursal.nombre = dto.nombre;
-    sucursal.direccion = dto.direccion;
-    sucursal.telefono = dto.telefono;
-    sucursal.ciudad = dto.ciudad;
-    sucursal.departamento = dto.departamento;
-
-    return this.sucursalRepo.save(sucursal);
+    Object.assign(sucursal, dto);
+    return this.sucursalRepository.save(sucursal);
   }
 
-  async remove(id: string) {
+  async remove(id: number): Promise<void> {
     const sucursal = await this.findOne(id);
-    await this.sucursalRepo.remove(sucursal);
-    return sucursal;
+    await this.sucursalRepository.remove(sucursal);
   }
 }

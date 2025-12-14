@@ -31,6 +31,10 @@ export class UsuarioService {
     return usuario;
   }
 
+async findByCorreo(correo: string) {
+  return await this.usuarioRepo.findOne({ where: { correo } });
+}
+
   async update(id: string, dto: UpdateUsuarioDto) {
     const usuario = await this.findOne(id);
 

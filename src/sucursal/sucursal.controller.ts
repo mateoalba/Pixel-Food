@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards,} from '@nestjs/common';
 import { SucursalService } from './sucursal.service';
 import { CreateSucursalDto } from './dto/create-sucursal.dto';
 import { UpdateSucursalDto } from './dto/update-sucursal.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('sucursales')
+@UseGuards(JwtAuthGuard)
 export class SucursalController {
   constructor(private readonly sucursalService: SucursalService) {}
 
@@ -19,16 +21,16 @@ export class SucursalController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.sucursalService.findOne(id);
+    return this.sucursalService.findOne(Number(id));
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateSucursalDto) {
-    return this.sucursalService.update(id, dto);
+    return this.sucursalService.update(Number(id), dto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.sucursalService.remove(id);
+    return this.sucursalService.remove(Number(id));
   }
 }

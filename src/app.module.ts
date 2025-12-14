@@ -8,6 +8,11 @@ import { ConfigModule } from '@nestjs/config';
 import { RolModule } from './rol/rol.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { SucursalModule } from './sucursal/sucursal.module';
+import { AuthModule } from './auth/auth.module';
+import { MesaModule } from './mesa/mesa.module';
+import { IngredienteModule } from './ingrediente/ingrediente.module';
+import { PlatoModule } from './plato/plato.module';
+import { RecetaModule } from './receta/receta.module';
 
 @Module({
   imports: [
@@ -20,6 +25,11 @@ import { SucursalModule } from './sucursal/sucursal.module';
     CategoriaModule,
     UsuarioModule,
     SucursalModule,
+    AuthModule,
+    MesaModule,
+    IngredienteModule,
+    PlatoModule,
+    RecetaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
