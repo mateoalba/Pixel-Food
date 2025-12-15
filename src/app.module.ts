@@ -16,6 +16,7 @@ import { RecetaModule } from './receta/receta.module';
 import { PedidoModule } from './pedido/pedido.module';
 import { ReservaModule } from './reserva/reserva.module';
 import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
       isGlobal: true,   
     }),
     TypeOrmModule.forRoot(typeOrmConfig),
+    MongooseModule.forRoot(process.env.MONGO_URI!),
     CategoriaModule,
     UsuarioModule,
     SucursalModule,
