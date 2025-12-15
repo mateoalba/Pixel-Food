@@ -41,3 +41,7 @@ nest generate service reserva
 nest generate module detalle_pedido
 nest generate controller detalle_pedido
 nest generate service detalle_pedido
+
+nest generate module metodo_pago
+nest generate controller metodo_pago
+nest generate service metodo_pago

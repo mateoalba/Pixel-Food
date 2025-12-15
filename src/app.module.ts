@@ -17,6 +17,7 @@ import { PedidoModule } from './pedido/pedido.module';
 import { ReservaModule } from './reserva/reserva.module';
 import { DetallePedidoModule } from './detalle_pedido/detalle_pedido.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { MetodoPagoModule } from './metodo_pago/metodo_pago.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     PedidoModule,
     ReservaModule,
     DetallePedidoModule,
+    MetodoPagoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
